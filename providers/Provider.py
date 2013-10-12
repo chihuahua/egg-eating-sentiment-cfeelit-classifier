@@ -30,7 +30,7 @@ class Provider:
     @param lexiconName The short name of the lexicon. No spaces allowed.
     '''
     # create new file.
-    newFile = open('providers/lexicons/' + self.name + '.json', 'w+')
+    newFile = open('lexicons/' + self.name + '.json', 'w')
 
     # write json of dictionary to file.
     rawJson = json.dumps(self.dict)

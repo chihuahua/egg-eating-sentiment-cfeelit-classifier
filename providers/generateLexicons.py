@@ -4,12 +4,13 @@
 # Oct. 11, 2013
 #
 
-import SentiWordNetProvider
+import InquirerProvider, SentiWordNetProvider
 
 if __name__ == '__main__':
 
   # list all of the providers.
   providers = [
+      InquirerProvider.InquirerProvider(),
       SentiWordNetProvider.SentiWordNetProvider(),
   ]
 

@@ -24,7 +24,7 @@ class SentiWordNetProvider(Provider.Provider):
     '''
 
     # open dictionary file.
-    self.dataFile = open("providers/data/SentiWordNet_3.0.0_20130122.txt")
+    self.dataFile = open("data/SentiWordNet_3.0.0_20130122.txt")
 
     # our dictionary.
     lexicon = {}
