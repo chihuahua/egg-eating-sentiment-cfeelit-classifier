@@ -4,7 +4,8 @@
 # Oct. 11, 2013
 #
 
-import Breaker
+import json
+import Breaker, providers.Providers
 
 class Classifier:
 
@@ -60,6 +61,15 @@ class Classifier:
         'D;': False,
     }
 
+    # initialize lexicon.
+    ps = providers.Providers.providers
+    self.lexicons = []
+    for provider in ps:
+      # add in dictionary for this provider.
+      rawFile = open('providers/lexicons/' + provider.name + '.json')
+      dictionary = json.load(rawFile)
+      self.lexicons.append(dictionary)
+
   def classify(self, post):
     '''
     Takes a post and classifies its mood.
@@ -73,9 +83,34 @@ class Classifier:
       return emoticonMood
 
     # turn the post into a bag of words.
-    bag = self.breaker.separate(post)
+    words = self.breaker.separate(post)
 
-    return 0
+    lexCounts = [[0 for i in range(3)] for j in range(4)]
+    lexicons = self.lexicons
+    for word in words:
+      for num, lexicon in enumerate(lexicons):
+        pol = lexicon.get(word, -1)
+
+        # this word is in dictionary, so we'll incorporate its rating.
+        if pol > -1:
+          lexCounts[num][pol] += 1
+        else:
+          lexCounts[num][2] += 1
+
+    tweetLabels = [2]*4
+    for num,lexCount in enumerate(lexCounts):
+      tweetLabels[num] = lexCount.index(max(lexCount))
+      if lexCount[0] == lexCount[1] and lexCount[0] > lexCount[2]:
+        tweetLabels[num] = 2
+
+      # print tweet labels
+      print tweetLabels[num]
+
+    tweetLabel = max(set(tweetLabels), key=tweetLabels.count)
+    if tweetLabels.count(0)==2 and tweetLabels.count(1)==2:
+      tweetLabel = 2
+
+    return tweetLabel
 
   def detectMoodByEmoticon(self, post):
     '''

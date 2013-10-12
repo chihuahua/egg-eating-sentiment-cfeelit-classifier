@@ -4,21 +4,12 @@
 # Oct. 11, 2013
 #
 
-import AfinnProvider, InquirerProvider, SentiWordNetProvider, \
-    SubjectivityProvider
+import Providers
 
 if __name__ == '__main__':
 
-  # list all of the providers.
-  providers = [
-      AfinnProvider.AfinnProvider(),
-      InquirerProvider.InquirerProvider(),
-      SentiWordNetProvider.SentiWordNetProvider(),
-      SubjectivityProvider.SubjectivityProvider(),
-  ]
-
   # have all the providers create a new lexicon (dictionary) to be stored in
   # the providers/lexicons directory.
-  for provider in providers:
+  for provider in Providers.providers:
     provider.makeDictionary()
     provider.saveLexicon()
