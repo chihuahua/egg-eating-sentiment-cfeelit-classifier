@@ -55,6 +55,10 @@ def J(base):
 def K(base):
     # K  Minimum stem length = 3 and remove ending only after l, i or u*e
     c = base[-1]
+    if len(base) < 3:
+      # There aren't even 3 letters in the cc base.
+      return False
+
     cc = base[-3]
     return len(base) > 2 and (c == "l" or c == "i" or (c == "e" and cc == "u"))
     
@@ -118,6 +122,10 @@ def W(base):
 def X(base):
     # X  Remove ending only after l, i or u*e
     c = base[-1]
+    if len(base) < 3:
+      # (chi): There aren't even enough letters for the cc base.
+      return False
+
     cc = base[-3]
     return c == "l" or c == "i" or (c == "e" and cc == "u")
     
@@ -523,7 +531,7 @@ def fix_ending(word):
     for endingrule in _endingrules[word[-1]]:
         target, newend = endingrule[:2]
         if word.endswith(target):
-            if len(endingrule) > 2:
+            if len(endingrule) > 2 and len(target) + 1 <= len(word):
                 exceptafter = endingrule[2]
                 c = word[0-(len(target)+1)]
                 if c in exceptafter: return word

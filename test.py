@@ -8,4 +8,7 @@ import SlangParser, providers.SentiWordNetProvider
 
 if __name__ == '__main__':
   p = providers.SentiWordNetProvider.SentiWordNetProvider()
-  p.makeDictionary()
+  for key in p.dict:
+    if p.dict[key] != 2:
+      print key, p.dict[key]
+  p.saveLexicon('sentiWordNet')
