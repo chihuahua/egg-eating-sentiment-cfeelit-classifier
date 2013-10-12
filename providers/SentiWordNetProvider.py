@@ -8,20 +8,14 @@
 import re
 import Provider
 
-class SentiWordNetProvider:
+class SentiWordNetProvider(Provider.Provider):
 
   def __init__(self):
     '''
     Creates a new provider for SentiWordNet
     '''
-    self.dataFile = open("providers/data/SentiWordNet_3.0.0_20130122.txt")
+    Provider.Provider.__init__(self, 'sentiWordNet')
     self.dict = self.makeDictionary()
-
-  def getDictionary(self):
-    '''
-    Returns a dictionary.
-    '''
-    pass
 
   def makeDictionary(self):
     '''
@@ -29,8 +23,11 @@ class SentiWordNetProvider:
     @return the dictionary.
     '''
 
+    # open dictionary file.
+    self.dataFile = open("providers/data/SentiWordNet_3.0.0_20130122.txt")
+
     # our dictionary.
-    dict = {}
+    lexicon = {}
 
     # ignore the first line.
     self.dataFile.readline()
@@ -38,7 +35,8 @@ class SentiWordNetProvider:
     for line in self.dataFile:
 
       # find all words in line.
-      words = re.findall(r'([a-z\']+)#\d+', line)
+      words = re.findall(r'\b([a-z\']+)#\d+\b', line)
+      words = map(self.stemmer.stem, words)
 
       # if no words, ignore line.
       if not words:
@@ -58,25 +56,22 @@ class SentiWordNetProvider:
 
       # update the scores of each word.
       for word in words:
-        if word in dict:
+        if word in lexicon:
           # add up the scores.
-          dict[word] = [a + b for (a,b) in zip(dict[word], scores)]
+          lexicon[word] = [a + b for (a,b) in zip(lexicon[word], scores)]
         else:
           # assign initial values.
-          dict[word] = scores
+          lexicon[word] = scores
 
     # convert dict to neg, pos, neu.
-    for key in dict:
-      values = dict[key]
-      minIndex = 0
-      min = values[minIndex]
+    for key in lexicon:
+      values = lexicon[key]
+      maxIndex = 0
+      max = values[maxIndex]
       for i in range(1, 3):
-        if values[i] < min:
-          min = values[i]
-          minIndex = i
-      dict[key] = minIndex
+        if values[i] > max:
+          max = values[i]
+          maxIndex = i
+      lexicon[key] = maxIndex
 
-    print dict
-    return dict
-
-
+    return lexicon
