@@ -15,7 +15,6 @@ class SentiWordNetProvider(Provider.Provider):
     Creates a new provider for SentiWordNet
     '''
     Provider.Provider.__init__(self, 'sentiWordNet')
-    self.dict = self.makeDictionary()
 
   def makeDictionary(self):
     '''
@@ -74,4 +73,4 @@ class SentiWordNetProvider(Provider.Provider):
           maxIndex = i
       lexicon[key] = maxIndex
 
-    return lexicon
+    self.dict = lexicon

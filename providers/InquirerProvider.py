@@ -14,13 +14,13 @@ class InquirerProvider(Provider.Provider):
     Creates a new provider for the Inquirer
     '''
     Provider.Provider.__init__(self, 'inquirer')
-    self.dict = self.makeDictionary()
 
   def makeDictionary(self):
     '''
     Makes the dictionary.
     @return the dictionary.
     '''
+
     inquirer_lexicon = {}
     with open('data/inquirerbasic.csv', 'rb') as f:
       csvreader = csv.reader(
@@ -40,4 +40,4 @@ class InquirerProvider(Provider.Provider):
         elif row[2]:
           inquirer_lexicon[word] = 0
 
-    return inquirer_lexicon
+    self.dict = inquirer_lexicon
