@@ -5,11 +5,29 @@
 #
 
 import Classifier
+import csv, re
+
+def filterTweet(tweet):
+  '''
+  Filters a tweet.
+  '''
+  return re.sub(
+    r'(@\w+)\b|(\[link\])|(\[\d+ comment\])',
+    '',
+    tweet
+  )
 
 if __name__ == '__main__':
+  # create a classifier.
   c = Classifier.Classifier()
 
-  # post to classify.
-  post = 'this is the worst exam ive ever taken.'
+  # open the file containing our testing data.
+  testFile = open('data/testing.csv', 'r')
 
-  print c.classify(post)
+  # read the data through a csv parser.
+  reader = csv.reader(testFile)
+
+  # each row contains a testing item.
+  for row in reader:
+    print filterTweet(row[1])
+

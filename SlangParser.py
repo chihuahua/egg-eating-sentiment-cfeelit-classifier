@@ -972,6 +972,7 @@ class SlangParser:
         'yw': 'you are welcome',
 
         'ziojkicc': 'zipper is open just kidding I cant see',
+        'zomg': 'oh my gosh',
         'zzzzz': 'sleeping',
     }
 
