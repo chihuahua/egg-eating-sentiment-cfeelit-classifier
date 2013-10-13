@@ -10,6 +10,6 @@ if __name__ == '__main__':
   c = Classifier.Classifier()
 
   # post to classify.
-  post = 'worst exam ive ever taken.'
+  post = 'this is the worst exam ive ever taken.'
 
   print c.classify(post)
