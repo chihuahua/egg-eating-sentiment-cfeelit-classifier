@@ -90,6 +90,8 @@ if __name__ == '__main__':
     tweet = filterTweet(row[1])
     guess = c.classify(tweet)
 
+    print [trueLabel, guess, tweet]
+
     if guess == trueLabel:
       # record a correct guess.
       corrects[guess] += 1
@@ -132,7 +134,7 @@ if __name__ == '__main__':
   rec = recall(mood.NEUTRAL, actualCounts, corrects, wrongs)
   print 'Recall: ' + `corrects[mood.NEUTRAL]` + ' out of ' + \
       `actualCounts[mood.NEUTRAL]` + \
-      ' correct (' + `rec` + ')\n'
+      ' correct (' + `rec` + ')'
   prec = precision(mood.NEUTRAL, actualCounts, corrects, wrongs)
   print "Precision: " + `prec`
   print "F1 Measure: " + `fmeasure(prec, rec)`
