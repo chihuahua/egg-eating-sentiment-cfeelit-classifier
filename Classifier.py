@@ -117,8 +117,9 @@ class Classifier:
         # possibly negate subsequent words if the current one is a negator.
         negationStatus = True
         for j in range(i, len(words)):
-          if self.punctuationRegex.match(word) or word in SpecialWords.reverseWords:
-            if re.findall(self.questionMarkRegex, word):
+          if self.punctuationRegex.match(words[j]) or words[j] in SpecialWords.reverseWords:
+            # found either a punctuation mark or a special word.
+            if re.findall(self.questionMarkRegex, words[j]):
               # we end with a question mark. don't negate.
               negationStatus = False
 

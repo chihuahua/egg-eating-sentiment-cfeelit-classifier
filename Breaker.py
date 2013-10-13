@@ -94,6 +94,13 @@ class Breaker:
     # used for stemming individual words.
     self.stemmer = Stemmer.Stemmer()
 
+    # used for detecting extensions.
+    self.extensionRegex =\
+        r'\b(?P<f>\w*)(?P<l>\w)(?!\2)(?P<r>\w)(?P=r){2,}(?P<s>\w*)\b'
+
+    # used for splitting a post into a bag of words.
+    self.splitRegex = r'\w+|[^\w\s]+'
+
   def removePunctuation(self, post):
     '''
     Removes the punctuation marks from a post.
@@ -109,12 +116,12 @@ class Breaker:
     '''
     prevPost = ''
     while prevPost != post:
+      # keep removing extensions while we still have them.
       prevPost = post
-      post = re.sub(
-          r'\b(?P<f>\w*)(?P<l>\w)(?!\2)(?P<r>\w)(?P=r){2,}(?P<s>\w*)\b',
-          r'\1\2\3\4 \1\2\3\4',
-          post
-      )
+
+      # remove the extension and duplicate the word.
+      post = re.sub(self.extensionRegex, r'\1\2\3\4 \1\2\3\4', post)
+
     return post
 
   def replaceContractions(self, post):
@@ -148,7 +155,7 @@ class Breaker:
     post = post.lower()
 
     # split into words and punctuation marks, get rid of empty strings.
-    bag = filter(None, re.findall(r"\w+|[^\w\s]+", post, re.UNICODE))
+    bag = filter(None, re.findall(self.splitRegex, post, re.UNICODE))
 
     # remove stop words.
     bag = filter(lambda word: word not in SpecialWords.stopWords, bag)
