@@ -4,8 +4,7 @@
 # Oct. 11, 2013
 #
 
-import json
-import Breaker, providers.Providers
+import Breaker, SpecialWords, providers.Providers
 
 class Classifier:
 
@@ -62,13 +61,8 @@ class Classifier:
     }
 
     # initialize lexicon.
-    ps = providers.Providers.providers
-    self.lexicons = []
-    for provider in ps:
-      # add in dictionary for this provider.
-      rawFile = open('providers/lexicons/' + provider.name + '.json')
-      dictionary = json.load(rawFile)
-      self.lexicons.append(dictionary)
+    provs = providers.Providers.providers
+    self.lexicons = [provider.fetchLexicon() for provider in provs]
 
   def classify(self, post):
     '''
@@ -79,7 +73,7 @@ class Classifier:
 
     # if emoticon found, we can classify post immediately.
     emoticonMood = self.detectMoodByEmoticon(post)
-    if emoticonMood != 0:
+    if emoticonMood != providers.Provider.NEUTRAL:
       return emoticonMood
 
     # turn the post into a bag of words.
@@ -87,17 +81,38 @@ class Classifier:
 
     lexCounts = [[0 for i in range(3)] for j in range(4)]
     lexicons = self.lexicons
+
+    # if this variable is positive, then the sentiment scores of words are
+    # negated since a recent negation word was encountered.
+    negationStatus = 0
+
     for word in words:
+      if word in SpecialWords.negationWords:
+        # negate the subsequent 3 words if the current one is a negator.
+        negationStatus = 3
+        continue
+
       for num, lexicon in enumerate(lexicons):
         pol = lexicon.get(word, -1)
 
         # this word is in dictionary, so we'll incorporate its rating.
         if pol > -1:
+          if negationStatus:
+            # negate sentiment since a negator was recently encountered.
+            if pol == providers.Provider.NEGATIVE:
+              pol = providers.Provider.POSITIVE
+            elif pol == providers.Provider.POSITIVE:
+              pol = providers.Provider.NEGATIVE
+
           lexCounts[num][pol] += 1
         else:
           lexCounts[num][2] += 1
 
-    tweetLabels = [2]*4
+      if negationStatus:
+        # decrement negation status since we've seen a word after the negator.
+        negationStatus -= 1
+
+    tweetLabels = [2] * 4
     for num,lexCount in enumerate(lexCounts):
       tweetLabels[num] = lexCount.index(max(lexCount))
       if lexCount[0] == lexCount[1] and lexCount[0] > lexCount[2]:
@@ -116,12 +131,14 @@ class Classifier:
     '''
     Detects the mood of a post based solely from the emoticon.
     @param post The post to parse.
-    @return 1 if positive, 0 if not sure, -1 if negative.
+    @return Provider.POSITIVE if positive, PROVIDER.NEUTRAL if not sure,
+        provider.NEGATIVE if negative.
     '''
+    moods = providers.Provider
     for emoticon in self.emoticons:
       if post.find(emoticon) != -1:
         # Feeling found.
-        return 1 if self.emoticons[emoticon] else -1
+        return moods.POSITIVE if self.emoticons[emoticon] else moods.NEGATIVE
 
     # no emoticon found.
-    return 0
+    return moods.NEUTRAL

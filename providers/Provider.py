@@ -24,6 +24,14 @@ class Provider:
     # for stemming words.
     self.stemmer = Stemmer.Stemmer()
 
+  def fetchLexicon(self):
+    '''
+    Fetches the lexicon for the provider. A lexicon is a mapping from stemmed
+    word to the sentiment score.
+    '''
+    rawFile = open('providers/lexicons/' + self.name + '.json')
+    return json.load(rawFile)
+
   def saveLexicon(self):
     '''
     Saves the lexicon.

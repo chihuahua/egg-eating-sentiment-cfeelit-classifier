@@ -18,4 +18,8 @@ class Stemmer:
     '''
     Stems a single word.
     '''
+    if not word:
+      # word is empty.
+      return ''
+
     return stemming.lovins.stem(word)

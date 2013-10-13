@@ -5,9 +5,7 @@
 #
 
 negationWords = frozenset([
-    'ain\'t', 'aren\'t', 'cannot', 'can\'t', 'cant', 'didnt', 'didn\'t' 'dont',
-    'doesn\'t', 'don\'t', 'hadn\'t', 'hasn\'t', "haven't", "isn't", "mustn't",
-    'no', 'neither', 'nor', 'not', "shan't", "shouldn't", "wasn't", "weren't"
+    'no', 'neither', 'nor', 'not', 'never'
 ])
 
 punctuation = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~'
@@ -35,4 +33,8 @@ stopWords = frozenset(['a', 'about', 'above', 'after', 'again', 'against',
                 "where's", 'which', 'while', 'who', "who's", 'whom', 'why',
                 "why's", 'with', "won't", 'would', "wouldn't", 'you',
                 "you'd", "you'll", "you're", "you've", 'your', 'yours',
-                'yourself', 'yourselves'])
+                'yourself', 'yourselves', 'id', 'im', 'lets', 'heres',
+                'hows', 'shes', 'thats', 'their\'s', 'weve', 'whens',
+                'whats', 'whos', 'whys', 'youd', 'youll', 'wont', 'ive',
+                'ever', 'take', 'took', 'taken', 'since', 'due to', 'hence',
+                'will'])

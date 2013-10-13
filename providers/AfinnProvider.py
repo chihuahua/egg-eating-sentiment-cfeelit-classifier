@@ -29,10 +29,11 @@ class AfinnProvider(Provider.Provider):
   def num_to_polar(self, x):
     '''
     Helper function for making dictionary.
+    @x The number for which to obtain the polarity.
     '''
     if x > 0:
-      return 1
+      return Provider.POSITIVE
     elif x < 0:
-      return 0
+      return Provider.NEGATIVE
     else:
-      return 2
+      return Provider.NEUTRAL
