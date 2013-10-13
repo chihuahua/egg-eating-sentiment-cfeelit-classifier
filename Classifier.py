@@ -118,9 +118,6 @@ class Classifier:
       if lexCount[0] == lexCount[1] and lexCount[0] > lexCount[2]:
         tweetLabels[num] = 2
 
-      # print tweet labels
-      print tweetLabels[num]
-
     tweetLabel = max(set(tweetLabels), key=tweetLabels.count)
     if tweetLabels.count(0)==2 and tweetLabels.count(1)==2:
       tweetLabel = 2
