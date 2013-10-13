@@ -5,6 +5,7 @@
 #
 
 import Breaker, SpecialWords, providers.Providers
+import re
 
 class Classifier:
 
@@ -21,6 +22,7 @@ class Classifier:
         '__/__': True, # applause
         '<>': True, # clap
         ':)': True,
+        '(:': True,
         ':-)': True,
         ':D': True,
         ';D': True,
@@ -37,8 +39,11 @@ class Classifier:
         'XO': True, # laughing.
         '(Y)': True, # liking.
         '=)': True,
+        '=-)': True,
         '@5': True, # high 5.
         'hi5': True,
+        ':]': True,
+        ';]': True,
 
         # negative moods.
         ':(': False,
@@ -57,12 +62,22 @@ class Classifier:
         ':-6': False, # exhausted.
         ':-\\': False,
         ':\\': False,
+        ':/': False,
         'D;': False,
     }
 
     # initialize lexicon.
     provs = providers.Providers.providers
     self.lexicons = [provider.fetchLexicon() for provider in provs]
+
+    # matches only letters.
+    self.punctuationRegex = re.compile('\W+')
+
+    # matches only question marks
+    self.questionMarkRegex = re.compile('\?')
+
+    # matches only exclamation marks.
+    self.exclamationRegex = re.compile('!')
 
   def classify(self, post):
     '''
@@ -79,20 +94,47 @@ class Classifier:
     # turn the post into a bag of words.
     words = self.breaker.separate(post)
 
+    if not words:
+      # nothing to latch off of. we can only say neutral.
+      return providers.Provider.NEUTRAL
+
     lexCounts = [[0 for i in range(3)] for j in range(4)]
     lexicons = self.lexicons
 
-    # if this variable is positive, then the sentiment scores of words are
-    # negated since a recent negation word was encountered.
-    negationStatus = 0
+    # whether we should currently negate.
+    negationStatus = False
 
-    for word in words:
+    # the factor to multiply all the sentiment-laden scores.
+    moodEmphasis = 1
+
+    exclamations = re.findall(self.exclamationRegex, post)
+    if exclamations:
+      # exclamation mark found. emphasize sentiments.
+      moodEmphasis = len(exclamations) * 5
+
+    for i, word in enumerate(words):
       if word in SpecialWords.negationWords:
-        # negate the subsequent 3 words if the current one is a negator.
-        negationStatus = 3
+        # possibly negate subsequent words if the current one is a negator.
+        negationStatus = True
+        for j in range(i, len(words)):
+          if self.punctuationRegex.match(word) or word in SpecialWords.reverseWords:
+            if re.findall(self.questionMarkRegex, word):
+              # we end with a question mark. don't negate.
+              negationStatus = False
+
+            # we found a stopping point.
+            break
+
+        # don't evaluate negators.
+        continue
+
+      if self.punctuationRegex.match(word) or word in SpecialWords.reverseWords:
+        # only punctuation and no words. or reversal word. end negation.
+        negationStatus = False
         continue
 
       for num, lexicon in enumerate(lexicons):
+        # get the sentiment for the word.
         pol = lexicon.get(word, -1)
 
         # this word is in dictionary, so we'll incorporate its rating.
@@ -104,13 +146,14 @@ class Classifier:
             elif pol == providers.Provider.POSITIVE:
               pol = providers.Provider.NEGATIVE
 
-          lexCounts[num][pol] += 1
+          # if this sentiment is non-neutral, potentially apply emphasis.
+          scoreAddend = 1
+          if pol != providers.Provider.NEUTRAL:
+            scoreAddend *= moodEmphasis
+
+          lexCounts[num][pol] += scoreAddend
         else:
           lexCounts[num][2] += 1
-
-      if negationStatus:
-        # decrement negation status since we've seen a word after the negator.
-        negationStatus -= 1
 
     tweetLabels = [2] * 4
     for num,lexCount in enumerate(lexCounts):

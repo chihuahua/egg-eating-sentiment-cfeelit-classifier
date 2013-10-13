@@ -107,12 +107,15 @@ class Breaker:
     are repeated in a string (appear 3 or more times) for emphasis.
     @param post The post from which extensions are replaced.
     '''
-
-    return re.sub(
-        r'\b(?P<f>\w*)(?P<l>\w)(?!\2)(?P<r>\w)(?P=r){2,}(?P<s>\w*)\b',
-        r'\1\2\3\4 \1\2\3\4',
-        post
-    )
+    prevPost = ''
+    while prevPost != post:
+      prevPost = post
+      post = re.sub(
+          r'\b(?P<f>\w*)(?P<l>\w)(?!\2)(?P<r>\w)(?P=r){2,}(?P<s>\w*)\b',
+          r'\1\2\3\4 \1\2\3\4',
+          post
+      )
+    return post
 
   def replaceContractions(self, post):
     '''
@@ -141,14 +144,11 @@ class Breaker:
     # replace any contractions such as don't with their expansions.
     post = self.replaceContractions(post)
 
-    # remove punctuation.
-    post = self.removePunctuation(post)
-
     # make lowercase.
     post = post.lower()
 
-    # split into spaces, get rid of empty strings.
-    bag = filter(None, post.split(' '))
+    # split into words and punctuation marks, get rid of empty strings.
+    bag = filter(None, re.findall(r"\w+|[^\w\s]+", post, re.UNICODE))
 
     # remove stop words.
     bag = filter(lambda word: word not in SpecialWords.stopWords, bag)

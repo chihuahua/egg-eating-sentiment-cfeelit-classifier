@@ -10,10 +10,12 @@ negationWords = frozenset([
 
 punctuation = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~'
 
+reverseWords = frozenset(['but', 'altho', 'although', 'tho', 'though', 'yet'])
+
 stopWords = frozenset(['a', 'about', 'above', 'after', 'again', 'against',
                       'all',
                 'am', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because',
-                'been', 'before', 'being', 'below', 'between', 'both', 'but',
+                'been', 'before', 'being', 'below', 'between', 'both',
                 'by', 'could', 'did', 'do', 'does', 'doing', 'down',
                 'during', 'each', 'few', 'for', 'from', 'further', 'had',
                 'has', 'have', 'having', 'he', "he'd", "he'll", "he's",
@@ -28,11 +30,10 @@ stopWords = frozenset(['a', 'about', 'above', 'after', 'again', 'against',
                 'them', 'themselves', 'then', 'there', "there's", 'these',
                 'they', "they'd", "they'll", "they're", "they've", 'this',
                 'those', 'through', 'to', 'too', 'under', 'until', 'up',
-                'very', 'was', 'we', "we'd", "we'll", "we're", "we've",
+                'very', 'was', 'we',
                 'were', 'what', "what's", 'when', "when's", 'where',
-                "where's", 'which', 'while', 'who', "who's", 'whom', 'why',
-                "why's", 'with', "won't", 'would', "wouldn't", 'you',
-                "you'd", "you'll", "you're", "you've", 'your', 'yours',
+                'which', 'while', 'who', "who's", 'whom', 'why',
+                'with', "won't", 'would', 'you', 'your', 'yours',
                 'yourself', 'yourselves', 'id', 'im', 'lets', 'heres',
                 'hows', 'shes', 'thats', 'their\'s', 'weve', 'whens',
                 'whats', 'whos', 'whys', 'youd', 'youll', 'wont', 'ive',
