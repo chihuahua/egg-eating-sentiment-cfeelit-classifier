@@ -128,7 +128,6 @@ if __name__ == '__main__':
   print "F1 Measure: " + `fmeasure(prec, rec)`
   print ''
 
-
   print 'Testing neutral posts alone.'
   rec = recall(mood.NEUTRAL, actualCounts, corrects, wrongs)
   print 'Recall: ' + `corrects[mood.NEUTRAL]` + ' out of ' + \

@@ -1,0 +1,15 @@
+#
+# Tests the classifier.
+# @author Chi Zeng (chi@chizeng.com)
+# Oct. 11, 2013
+#
+
+import Classifier
+
+if __name__ == '__main__':
+  c = Classifier.Classifier()
+
+  # post to classify.
+  post = 'this is the worst exam ive ever taken.'
+
+  print c.classify(post)
