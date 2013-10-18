@@ -26,5 +26,7 @@ class Stemmer:
       return ''
 
     if word in self.exceptions:
+      # respect exceptions.
       return self.exceptions[word]
+
     return stemming.lovins.stem(word)
