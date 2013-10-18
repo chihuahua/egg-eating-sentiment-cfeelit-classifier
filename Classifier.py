@@ -22,8 +22,13 @@ class Classifier:
         '__/__': True, # applause
         '<>': True, # clap
         ':)': True,
+	';)': True,
         '(:': True,
+	'(;': True,
         ':-)': True,
+	'(-:': True,
+	';-)': True,
+	'(-;': True,
         ':D': True,
         ';D': True,
         ':-{}': True, # blowing a kiss.
@@ -34,7 +39,6 @@ class Classifier:
         ':->': True, # devilish.
         ';->': True, # devilish wink.
         ':->*<-:': True, # french kiss.
-        ':-)*(-:': True, # kiss.
         'XD': True, # laughing.
         'XO': True, # laughing.
         '(Y)': True, # liking.
@@ -66,7 +70,7 @@ class Classifier:
         'D;': False,
     }
 
-    self.strongNegWords = ['hel', 'fuck', 'hat', 'shit', 'asshol', 'suck', 'bullshit', 'worst', 'heck']
+    self.strongNegWords = ['hel', 'fuck', 'hat', 'shit', 'asshol', 'suck', 'bullshit', 'worst', 'heck', 'pis']
     self.strongPosWords = ['lov', 'yay']
     self.strongAdvs = ['fucking', 'freaking', 'damn', 'darn']
 
@@ -146,7 +150,7 @@ class Classifier:
 
         # this word is in dictionary, so we'll incorporate its rating.
         if pol > -1:
-          if negationStatus:
+          if negationStatus and word not in self.strongPosWords and word not in self.strongNegWords:
             # negate sentiment since a negator was recently encountered.
             if pol == providers.Provider.NEGATIVE:
               pol = providers.Provider.POSITIVE

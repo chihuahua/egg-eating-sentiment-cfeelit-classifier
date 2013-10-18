@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
     # print [trueLabel, guess, tweet]
     
-    if guess != trueLabel:
+    if guess != trueLabel and (guess == 1 or guess == 0):
       print [trueLabel, guess, tweet]
 
     if guess == trueLabel:
@@ -106,9 +106,9 @@ if __name__ == '__main__':
     actualCounts[trueLabel] += 1
     postsDone += 1
 
-    if postsDone % 20 == 0:
+    # if postsDone % 20 == 0:
       # print how many done after every 20 posts.
-      print `postsDone` + ' posts tested.'
+      # print `postsDone` + ' posts tested.'
 
   # report results.
   print 'In total, there were ' + `sum(actualCounts)` + ' posts.\n'
