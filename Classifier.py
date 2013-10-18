@@ -98,8 +98,10 @@ class Classifier:
       # nothing to latch off of. we can only say neutral.
       return providers.Provider.NEUTRAL
 
+    # store votes of the lexicons.
     lexCounts = [[0 for i in range(3)] for j in range(4)]
     lexicons = self.lexicons
+    numLexicons = len(lexicons)
 
     # whether we should currently negate.
     negationStatus = False
@@ -109,7 +111,7 @@ class Classifier:
 
     exclamations = re.findall(self.exclamationRegex, post)
     if exclamations:
-      # exclamation mark found. emphasize sentiments.
+      # exclamation mark found. emphasize sentiments based on how many.
       moodEmphasis = len(exclamations) * 5
 
     for i, word in enumerate(words):
@@ -150,21 +152,29 @@ class Classifier:
           # if this sentiment is non-neutral, potentially apply emphasis.
           scoreAddend = 1
           if pol != providers.Provider.NEUTRAL:
+            # emphasize the sentiment of this word.
             scoreAddend *= moodEmphasis
 
           lexCounts[num][pol] += scoreAddend
         else:
-          lexCounts[num][2] += 1
+          lexCounts[num][providers.Provider.NEUTRAL] += 1
 
-    tweetLabels = [2] * 4
-    for num,lexCount in enumerate(lexCounts):
+    tweetLabels = [providers.Provider.NEUTRAL] * numLexicons
+    for num, lexCount in enumerate(lexCounts):
       tweetLabels[num] = lexCount.index(max(lexCount))
-      if lexCount[0] == lexCount[1] and lexCount[0] > lexCount[2]:
-        tweetLabels[num] = 2
+      if lexCount[providers.Provider.NEGATIVE] == \
+         lexCount[providers.Provider.POSITIVE] and \
+            lexCount[providers.Provider.NEGATIVE] > \
+                lexCount[providers.Provider.NEUTRAL]:
+        # if tie, label tweet as neutral.
+        tweetLabels[num] = providers.Provider.NEUTRAL
 
     tweetLabel = max(set(tweetLabels), key=tweetLabels.count)
-    if tweetLabels.count(0)==2 and tweetLabels.count(1)==2:
-      tweetLabel = 2
+    halfNumLexicons = numLexicons / 2
+    if tweetLabels.count(providers.Provider.NEGATIVE) == halfNumLexicons and \
+        tweetLabels.count(providers.Provider.POSITIVE) == halfNumLexicons:
+      # if 2 positives and 2 negatives, then tweet is neutral.
+      tweetLabel = providers.Provider.NEUTRAL
 
     return tweetLabel
 
