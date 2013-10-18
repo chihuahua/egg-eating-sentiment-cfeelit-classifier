@@ -4,12 +4,141 @@
 # Oct. 11, 2013
 #
 
-import Classifier
+import Classifier, providers.Provider
+import csv, re
+
+def filterTweet(tweet):
+  '''
+  Filters a tweet. Takes out #__, @__, [link], [_ comments], URLS
+  '''
+  return re.sub(
+    r'(@\w+)\b|(\[link\])|(\[\d+ comments?\])|(#\w+)\b|(https?://[\w=/\?#-\.]+)\b',
+    '',
+    tweet
+  )
+
+def precision(category, actualCounts, corrects, wrongs):
+  '''
+  Computes the precision.
+  @param category The category (integer value).
+  @param actualCounts A 3-tuple denoting the counts of the posts.
+  @param corrects A 3-tuple denoting the correct guesses.
+  @param wrongs A 3-tuple denoting the wrong guesses.
+  @return the precision.
+  '''
+  return 1. * corrects[category] / \
+      (corrects[category] + wrongs[category])
+
+def recall(category, actualCounts, corrects, wrongs):
+  '''
+  Computes the recall.
+  @param category The category (integer value).
+  @param actualCounts A 3-tuple denoting the counts of the posts.
+  @param corrects A 3-tuple denoting the correct guesses.
+  @param wrongs A 3-tuple denoting the wrong guesses.
+  @return the recall.
+  '''
+  return 1. * corrects[category] / actualCounts[category]
+
+def fmeasure(precision, recall):
+  '''
+  Computes the f1 measure.
+  @param precision The precision.
+  @param recall The recall.
+  @return the f1 measure.
+  '''
+  return 2. * precision * recall / (precision + recall)
+
+def standardizeRating(testRating):
+  '''
+  Standardizes ratings. Maps test ratings to the ones we use.
+  @param testRating An int denoting the rating from the test.
+  @return The rating we assign.
+  '''
+  if testRating == 0:
+    return providers.Provider.NEGATIVE
+  elif testRating == 1:
+    return providers.Provider.POSITIVE
+
+  return providers.Provider.NEUTRAL
 
 if __name__ == '__main__':
+  mood = providers.Provider
+
+  # create a classifier.
   c = Classifier.Classifier()
 
-  # post to classify.
-  post = 'this is the worst exam ive ever taken.'
+  # open the file containing our testing data.
+  testFile = open('data/testing.csv', 'r')
 
-  print c.classify(post)
+  # read the data through a csv parser.
+  reader = csv.reader(testFile)
+
+  # actual counts of negative, positive, and neutral tweets.
+  actualCounts = [0, 0, 0]
+
+  # correct guesses.
+  corrects = [0, 0, 0]
+
+  # wrong guesses.
+  wrongs = [0, 0, 0]
+
+  # each row contains a testing item.
+  postsDone = 0
+  for row in reader:
+    trueLabel = standardizeRating(int(row[0]))
+    tweet = filterTweet(row[1])
+    guess = c.classify(tweet)
+
+    print [trueLabel, guess, tweet]
+    
+    # if guess == 1 and guess != trueLabel:
+      # print [trueLabel, guess, tweet]
+
+    if guess == trueLabel:
+      # record a correct guess.
+      corrects[guess] += 1
+    else:
+      # record a wrong guess.
+      wrongs[guess] += 1
+
+    # record category of item.
+    actualCounts[trueLabel] += 1
+    postsDone += 1
+
+    if postsDone % 20 == 0:
+      # print how many done after every 20 posts.
+      print `postsDone` + ' posts tested.'
+
+  # report results.
+  print 'In total, there were ' + `sum(actualCounts)` + ' posts.\n'
+
+  print 'Testing positive posts alone.'
+  rec = recall(mood.POSITIVE, actualCounts, corrects, wrongs)
+  print 'Recall: ' + `corrects[mood.POSITIVE]` + ' out of ' + \
+      `actualCounts[mood.POSITIVE]` + \
+      ' correct (' + `rec` + ')'
+  prec = precision(mood.POSITIVE, actualCounts, corrects, wrongs)
+  print "Precision: " + `prec`
+  print "F1 Measure: " + `fmeasure(prec, rec)`
+  print ''
+
+  print 'Testing negative posts alone.'
+  rec = recall(mood.NEGATIVE, actualCounts, corrects, wrongs)
+  print 'Recall: ' + `corrects[mood.NEGATIVE]` + ' out of ' + \
+      `actualCounts[mood.NEGATIVE]` + \
+      ' correct (' + `rec` + ')'
+  prec = precision(mood.NEGATIVE, actualCounts, corrects, wrongs)
+  print "Precision: " + `prec`
+  print "F1 Measure: " + `fmeasure(prec, rec)`
+  print ''
+
+  print 'Testing neutral posts alone.'
+  rec = recall(mood.NEUTRAL, actualCounts, corrects, wrongs)
+  print 'Recall: ' + `corrects[mood.NEUTRAL]` + ' out of ' + \
+      `actualCounts[mood.NEUTRAL]` + \
+      ' correct (' + `rec` + ')'
+  prec = precision(mood.NEUTRAL, actualCounts, corrects, wrongs)
+  print "Precision: " + `prec`
+  print "F1 Measure: " + `fmeasure(prec, rec)`
+  print ''
