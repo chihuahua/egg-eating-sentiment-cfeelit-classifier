@@ -4,6 +4,8 @@
 # Oct. 11, 2013
 #
 
+import providers.Provider
+
 negationWords = frozenset([
     'no', 'neither', 'nor', 'not', 'never'
 ])
@@ -39,3 +41,12 @@ stopWords = frozenset(['a', 'about', 'above', 'after', 'again', 'against',
                 'whats', 'whos', 'whys', 'youd', 'youll', 'wont', 'ive',
                 'ever', 'take', 'took', 'taken', 'since', 'due to', 'hence',
                 'will'])
+
+# exceptions for lexicons. these exceptions override. they'll be stemmed later.
+lexiconExceptions = {
+    'rock': providers.Provider.POSITIVE,
+    'ha': providers.Provider.POSITIVE,
+    'hah': providers.Provider.POSITIVE,
+    'hahah': providers.Provider.POSITIVE,
+    'hahahah': providers.Provider.POSITIVE,
+}

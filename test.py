@@ -90,9 +90,8 @@ if __name__ == '__main__':
     tweet = filterTweet(row[1])
     guess = c.classify(tweet)
 
-    if guess == 1 and guess != trueLabel:
-      # print out false positives.
-      print [trueLabel, guess, tweet]
+    # print results.
+    print [trueLabel, guess, tweet]
 
     if guess == trueLabel:
       # record a correct guess.

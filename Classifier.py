@@ -137,11 +137,16 @@ class Classifier:
         continue
 
       for num, lexicon in enumerate(lexicons):
-        # get the sentiment for the word.
-        pol = lexicon.get(word, -1)
+        scoreAddend = 1
+        pol = providers.Provider.NEUTRAL
+        if word in SpecialWords.lexiconExceptions:
+          # for this word, override what the lexicons say.
+          pol = SpecialWords.lexiconExceptions[word]
+        else:
+          # get the sentiment for the word.
+          pol = lexicon.get(word, providers.Provider.NEUTRAL)
 
-        # this word is in dictionary, so we'll incorporate its rating.
-        if pol > -1:
+          # this word is in dictionary, so we'll incorporate its rating.
           if negationStatus:
             # negate sentiment since a negator was recently encountered.
             if pol == providers.Provider.NEGATIVE:
@@ -150,14 +155,11 @@ class Classifier:
               pol = providers.Provider.NEGATIVE
 
           # if this sentiment is non-neutral, potentially apply emphasis.
-          scoreAddend = 1
           if pol != providers.Provider.NEUTRAL:
             # emphasize the sentiment of this word.
             scoreAddend *= moodEmphasis
 
-          lexCounts[num][pol] += scoreAddend
-        else:
-          lexCounts[num][providers.Provider.NEUTRAL] += 1
+        lexCounts[num][pol] += scoreAddend
 
     tweetLabels = [providers.Provider.NEUTRAL] * numLexicons
     for num, lexCount in enumerate(lexCounts):
