@@ -4,11 +4,18 @@
 # Oct. 11, 2013
 #
 
-import Classifier
+import Breaker, Classifier
 
 if __name__ == '__main__':
-  post = 'i lam so in love with Bobby Flay... he is my favorite. RT :  ' \
-         'you need a place in Phoenix. We have great peppers here!'
+  post = '  Great Stanford course. Thanks for making it available to the ' \
+         'public! Really helpful and informative for starting off!'
+  # post = 'not bad'
 
+  b = Breaker.Breaker()
   c = Classifier.Classifier()
-  c.classify(post)
+  print c.classify(post)
+
+  # print the classification of each word.
+  # words = b.separate(post)
+  # for word in words:
+  #   print word + ': ' + `c.classify(word)`

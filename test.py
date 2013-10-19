@@ -104,10 +104,6 @@ if __name__ == '__main__':
     actualCounts[trueLabel] += 1
     postsDone += 1
 
-    # if postsDone % 20 == 0:
-      # print how many done after every 20 posts.
-      # print `postsDone` + ' posts tested.'
-
   # report results.
   print 'In total, there were ' + `sum(actualCounts)` + ' posts.\n'
 

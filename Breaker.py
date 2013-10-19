@@ -99,7 +99,7 @@ class Breaker:
         r'\b(?P<f>\w*)(?P<l>\w)(?!\2)(?P<r>\w)(?P=r){2,}(?P<s>\w*)\b'
 
     # used for splitting a post into a bag of words.
-    self.splitRegex = r'\w+|[^\w\s]+'
+    self.splitRegex = r'[\w\*\-\']+|[!"#\$%&\(\)\+,-\./:;<=>\?@\[\\_`{\|}~\]\^]+'
 
   def removePunctuation(self, post):
     '''

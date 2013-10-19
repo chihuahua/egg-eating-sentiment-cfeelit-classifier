@@ -908,7 +908,7 @@ class SlangParser:
         'wru': 'who are you',
         'wt': 'what',
         'wtc': 'what the crap',
-        'wtf': 'what the frick',
+        'wtf': 'what the fuck',
         'wtg': 'way to go',
         'wth': 'what the heck',
         'wtmi': 'way too much information',

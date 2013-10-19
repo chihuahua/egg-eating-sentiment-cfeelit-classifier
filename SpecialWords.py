@@ -4,13 +4,14 @@
 # Oct. 11, 2013
 #
 
+import re
 import providers.Provider
 
 negationWords = frozenset([
     'no', 'neither', 'nor', 'not', 'never'
 ])
 
-punctuation = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~'
+punctuation = '!"#$%&()+,-./:;<=>?@[\\]^_`{|}~'
 
 reverseWords = frozenset(['but', 'altho', 'although', 'tho', 'though', 'yet'])
 
@@ -51,7 +52,6 @@ lexiconExceptions = {
     'hahahah': providers.Provider.POSITIVE,
 }
 
-strongNegWords = frozenset(['hel', 'fuck', 'hat', 'shit', 'asshol', 'suck',
-                   'bullshit', 'worst', 'heck', 'pis'])
-strongPosWords = frozenset(['lov', 'yay'])
-strongAdverbs = frozenset(['fucking', 'freaking', 'damn', 'darn'])
+strongNegRegex = re.compile('hel|f(u|\*)(c|\*)?k|hat|(bull)?sh(i|\*)t|asshol|suck|worst|heck|pis')
+strongPosRegex = re.compile('lov|yay')
+strongAdverbRegex = re.compile('f(u|\*)(c|\*)?kin(g|\')?|freakin(g|\')?|damn|darn')

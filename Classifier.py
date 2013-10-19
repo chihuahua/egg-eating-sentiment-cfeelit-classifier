@@ -98,6 +98,8 @@ class Classifier:
     # turn the post into a bag of words.
     words = self.breaker.separate(post)
 
+    print `words`
+
     if not words:
       # nothing to latch off of. we can only say neutral.
       return providers.Provider.NEUTRAL
@@ -143,6 +145,8 @@ class Classifier:
       for num, lexicon in enumerate(lexicons):
         scoreAddend = 1
         pol = providers.Provider.NEUTRAL
+        isStrongNegative = re.match(SpecialWords.strongNegRegex, word)
+        isStrongPositive = re.match(SpecialWords.strongPosRegex, word)
         if word in SpecialWords.lexiconExceptions:
           # for this word, override what the lexicons say.
           pol = SpecialWords.lexiconExceptions[word]
@@ -150,33 +154,42 @@ class Classifier:
           # get the sentiment for the word.
           pol = lexicon.get(word, providers.Provider.NEUTRAL)
 
-          if negationStatus \
-                and word not in SpecialWords.strongPosWords \
-                    and word not in SpecialWords.strongNegWords:
+          # now, possibly override the lexicon.
+          if isStrongNegative:
+            # we have a strong negative word.
+            pol = providers.Provider.NEGATIVE
+          if isStrongPositive:
+            # we have a strong positive word.
+            pol = providers.Provider.POSITIVE
+
+          if negationStatus and not isStrongPositive and not isStrongNegative:
             # negate sentiment since a negator was recently encountered.
             if pol == providers.Provider.NEGATIVE:
               pol = providers.Provider.POSITIVE
             elif pol == providers.Provider.POSITIVE:
               pol = providers.Provider.NEGATIVE
 
+        print word + ': ' + `pol`
+        scoreAddend = 1
         # if this sentiment is non-neutral, potentially apply emphasis.
         if pol != providers.Provider.NEUTRAL:
           # emphasize the sentiment of this word.
           scoreAddend *= moodEmphasis
 
-        if word in SpecialWords.strongNegWords or \
-            word in SpecialWords.strongPosWords:
+        if isStrongNegative or isStrongPositive:
           # if we have a strong word, add more to its polarity.
           scoreAddend *= 5
-        if i != 0 and words[i-1] in SpecialWords.strongAdverbs:
+        if i != 0 and re.match(SpecialWords.strongAdverbRegex, words[i - 1]):
           # if the word is preceded by a strong adverb, add more to its polarity.
           scoreAddend *= 5
 
         # update the vote by this lexicon.
         lexCounts[num][pol] += scoreAddend
+        print 'lexCount' + `num` + 'pol' + `pol` + 'added' + `scoreAddend`
 
     tweetLabels = [providers.Provider.NEUTRAL] * numLexicons
     for num, lexCount in enumerate(lexCounts):
+      print lexCount
       tweetLabels[num] = lexCount.index(max(lexCount))
       if lexCount[providers.Provider.NEGATIVE] == \
          lexCount[providers.Provider.POSITIVE] and \
@@ -185,7 +198,13 @@ class Classifier:
         # if tie, label tweet as neutral.
         tweetLabels[num] = providers.Provider.NEUTRAL
 
+    print tweetLabels
     tweetLabel = max(set(tweetLabels), key=tweetLabels.count)
+    # votes = [0, 0, 0]
+    # for label in tweetLabels:
+      # votes[label] += 1
+
+
     halfNumLexicons = numLexicons / 2
     if tweetLabels.count(providers.Provider.NEGATIVE) == halfNumLexicons and \
         tweetLabels.count(providers.Provider.POSITIVE) == halfNumLexicons:
