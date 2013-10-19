@@ -52,6 +52,6 @@ lexiconExceptions = {
     'hahahah': providers.Provider.POSITIVE,
 }
 
-strongNegRegex = re.compile('hel|f(u|\*)(c|\*)?k|hat|(bull)?sh(i|\*)t|asshol|suck|worst|heck|pis')
-strongPosRegex = re.compile('lov|yay')
-strongAdverbRegex = re.compile('f(u|\*)(c|\*)?kin(g|\')?|freakin(g|\')?|damn|darn')
+strongNegRegex = re.compile('^(hel|f(u|\*)(c|\*)?k|hat|(bull)?sh(i|\*)t|asshol|suck|worst|heck|pis)$')
+strongPosRegex = re.compile('^(lov|yay)$')
+strongAdverbRegex = re.compile('^(f(u|\*)(c|\*)?kin(g|\')?|freakin(g|\')?|damn|darn)$')

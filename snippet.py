@@ -4,14 +4,13 @@
 # Oct. 11, 2013
 #
 
-import Breaker, Classifier
+import Breaker, Classifier, Stemmer
 
 if __name__ == '__main__':
-  post = '  Great Stanford course. Thanks for making it available to the ' \
-         'public! Really helpful and informative for starting off!'
+  post = 'not'
   # post = 'not bad'
 
-  b = Breaker.Breaker()
+  # b = Breaker.Breaker()
   c = Classifier.Classifier()
   print c.classify(post)
 
@@ -19,3 +18,4 @@ if __name__ == '__main__':
   # words = b.separate(post)
   # for word in words:
   #   print word + ': ' + `c.classify(word)`
+

@@ -98,8 +98,6 @@ class Classifier:
     # turn the post into a bag of words.
     words = self.breaker.separate(post)
 
-    print `words`
-
     if not words:
       # nothing to latch off of. we can only say neutral.
       return providers.Provider.NEUTRAL
@@ -169,7 +167,6 @@ class Classifier:
             elif pol == providers.Provider.POSITIVE:
               pol = providers.Provider.NEGATIVE
 
-        print word + ': ' + `pol`
         scoreAddend = 1
         # if this sentiment is non-neutral, potentially apply emphasis.
         if pol != providers.Provider.NEUTRAL:
@@ -185,12 +182,18 @@ class Classifier:
 
         # update the vote by this lexicon.
         lexCounts[num][pol] += scoreAddend
-        print 'lexCount' + `num` + 'pol' + `pol` + 'added' + `scoreAddend`
 
     tweetLabels = [providers.Provider.NEUTRAL] * numLexicons
     for num, lexCount in enumerate(lexCounts):
-      print lexCount
-      tweetLabels[num] = lexCount.index(max(lexCount))
+
+      highestCategory = max(lexCount)
+      if 3 * highestCategory == sum(lexCount):
+        # all the categories have equal numbers of votes. neutral.
+        tweetLabels[num] = providers.Provider.NEUTRAL
+      else:
+        # chose the category with the most votes.
+        tweetLabels[num] = lexCount.index(highestCategory)
+
       if lexCount[providers.Provider.NEGATIVE] == \
          lexCount[providers.Provider.POSITIVE] and \
             lexCount[providers.Provider.NEGATIVE] > \
@@ -198,17 +201,10 @@ class Classifier:
         # if tie, label tweet as neutral.
         tweetLabels[num] = providers.Provider.NEUTRAL
 
-    print tweetLabels
     tweetLabel = max(set(tweetLabels), key=tweetLabels.count)
-    # votes = [0, 0, 0]
-    # for label in tweetLabels:
-      # votes[label] += 1
-
-
-    halfNumLexicons = numLexicons / 2
-    if tweetLabels.count(providers.Provider.NEGATIVE) == halfNumLexicons and \
-        tweetLabels.count(providers.Provider.POSITIVE) == halfNumLexicons:
-      # if 2 positives and 2 negatives, then tweet is neutral.
+    if tweetLabels.count(providers.Provider.NEGATIVE) == \
+        tweetLabels.count(providers.Provider.POSITIVE):
+      # if same number of positives and negatives, then tweet is neutral.
       tweetLabel = providers.Provider.NEUTRAL
 
     return tweetLabel
