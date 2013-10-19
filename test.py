@@ -89,9 +89,9 @@ if __name__ == '__main__':
     trueLabel = standardizeRating(int(row[0]))
     tweet = filterTweet(row[1])
     guess = c.classify(tweet)
-
-    # print results.
-    print [trueLabel, guess, tweet]
+    
+    if guess != trueLabel and guess != providers.Provider.NEUTRAL:
+      print [trueLabel, guess, tweet]
 
     if guess == trueLabel:
       # record a correct guess.
@@ -104,9 +104,9 @@ if __name__ == '__main__':
     actualCounts[trueLabel] += 1
     postsDone += 1
 
-    if postsDone % 20 == 0:
+    # if postsDone % 20 == 0:
       # print how many done after every 20 posts.
-      print `postsDone` + ' posts tested.'
+      # print `postsDone` + ' posts tested.'
 
   # report results.
   print 'In total, there were ' + `sum(actualCounts)` + ' posts.\n'

@@ -70,6 +70,10 @@ class Classifier:
         'D;': False,
     }
 
+    self.strongNegWords = ['hel', 'fuck', 'hat', 'shit', 'asshol', 'suck', 'bullshit', 'worst', 'heck', 'pis']
+    self.strongPosWords = ['lov', 'yay']
+    self.strongAdvs = ['fucking', 'freaking', 'damn', 'darn']
+
     # initialize lexicon.
     provs = providers.Providers.providers
     self.lexicons = [provider.fetchLexicon() for provider in provs]
@@ -141,39 +145,31 @@ class Classifier:
         continue
 
       for num, lexicon in enumerate(lexicons):
-        scoreAddend = 1
-        pol = providers.Provider.NEUTRAL
-        if word in SpecialWords.lexiconExceptions:
-          # for this word, override what the lexicons say.
-          pol = SpecialWords.lexiconExceptions[word]
-        else:
-          # get the sentiment for the word.
-          pol = lexicon.get(word, providers.Provider.NEUTRAL)
+        # get the sentiment for the word.
+        pol = lexicon.get(word, -1)
 
-          if negationStatus \
-                and word not in SpecialWords.strongPosWords \
-                    and word not in SpecialWords.strongNegWords:
+        # this word is in dictionary, so we'll incorporate its rating.
+        if pol > -1:
+          if negationStatus and word not in self.strongPosWords and word not in self.strongNegWords:
             # negate sentiment since a negator was recently encountered.
             if pol == providers.Provider.NEGATIVE:
               pol = providers.Provider.POSITIVE
             elif pol == providers.Provider.POSITIVE:
               pol = providers.Provider.NEGATIVE
 
-        # if this sentiment is non-neutral, potentially apply emphasis.
-        if pol != providers.Provider.NEUTRAL:
-          # emphasize the sentiment of this word.
-          scoreAddend *= moodEmphasis
+          # if this sentiment is non-neutral, potentially apply emphasis.
+          scoreAddend = 1
+          if pol != providers.Provider.NEUTRAL:
+            # emphasize the sentiment of this word.
+            scoreAddend *= moodEmphasis
+	    if word in self.strongNegWords or word in self.strongPosWords:
+	      scoreAddend *= 5
+	    if i != 0 and words[i-1] in self.strongAdvs:
+	      scoreAddend *= 5
 
-        if word in SpecialWords.strongNegWords or \
-            word in SpecialWords.strongPosWords:
-          # if we have a strong word, add more to its polarity.
-          scoreAddend *= 5
-        if i != 0 and words[i-1] in SpecialWords.strongAdverbs:
-          # if the word is preceded by a strong adverb, add more to its polarity.
-          scoreAddend *= 5
-
-        # update the vote by this lexicon.
-        lexCounts[num][pol] += scoreAddend
+          lexCounts[num][pol] += scoreAddend
+        else:
+          lexCounts[num][providers.Provider.NEUTRAL] += 1
 
     tweetLabels = [providers.Provider.NEUTRAL] * numLexicons
     for num, lexCount in enumerate(lexCounts):

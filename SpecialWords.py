@@ -50,3 +50,8 @@ lexiconExceptions = {
     'hahah': providers.Provider.POSITIVE,
     'hahahah': providers.Provider.POSITIVE,
 }
+
+strongNegWords = frozenset(['hel', 'fuck', 'hat', 'shit', 'asshol', 'suck',
+                   'bullshit', 'worst', 'heck', 'pis'])
+strongPosWords = frozenset(['lov', 'yay'])
+strongAdverbs = frozenset(['fucking', 'freaking', 'damn', 'darn'])

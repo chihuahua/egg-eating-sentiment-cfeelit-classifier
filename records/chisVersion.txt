@@ -1,0 +1,36 @@
+[2, 1, ': I just checked my google for my business- blip shows up as the second entry! Huh. Is that a good or ba... ? /~6emhv']
+[0, 1, 'omg so bored &amp; my tattoooos are so itchy!!  help! aha =)']
+[1, 0, 'Night at the Museum, Wolverine and junk food - perfect monday!']
+[0, 1, 'Ahh...got rid of stupid time warner today &amp; now taking a nap while the roomies cook for me. Pretty good end for a monday :)']
+[1, 0, 'My wrist still hurts. I have to get it looked at. I HATE the dr/dentist/scary places. :( Time to watch Eagle eye. If you want to join, txt!']
+[2, 0, 'Did not realize there is a gym above Safeway!']
+[2, 0, 'Warren Buffet on the economy ']
+[2, 1, 'RT Look, Available !Amazon Kindle2 &amp; Kindle DX, Get it Here:  The Top Electronic Book Reader Period, free 2 day ship ...']
+[0, 1, 'Time Warner cable phone reps r dumber than nails!!!!! UGH! Cable was working 10 mins ago now its not WTF!']
+[0, 1, " we tried but Time Warner wasn't being nice so we recorded today. :)"]
+[0, 1, 'Safari 4 is fast :) Even on my shitty AT&amp;T tethering.']
+[0, 1, "Malcolm Gladwell is a genius at tricking people into not realizing he's a fucking idiot"]
+[0, 1, ' Alpha SUCKS! Even for researchers the information provided is less than you can get from  or , totally useless!']
+[2, 1, 'Ethics and nonprofits -    ']
+[1, 0, ' I never did thank you for including me in your Top 100 Twitter Authors! You Rock! (&amp; I New Wave :-D) ']
+[2, 0, 'Weird Piano Guitar House in China! ']
+[2, 0, 'dropped her broccoli walking home from safeway! ;( so depressed']
+[0, 1, "argghhhh why won't  my jquery appear in safari bad safari !!!"]
+[0, 1, " - its not so much my obsession with cell phones, but the iphone!  i'm a slave to at&amp;t forever because of it. :)"]
+[0, 1, " we love you too and don't want you to die!!!!!!  Latex = the devil"]
+In total, there were 498 posts.
+
+Testing positive posts alone.
+Recall: 83 out of 182 correct (0.45604395604395603)
+Precision: 0.8645833333333334
+F1 Measure: 0.5971223021582733
+
+Testing negative posts alone.
+Recall: 43 out of 177 correct (0.24293785310734464)
+Precision: 0.86
+F1 Measure: 0.3788546255506608
+
+Testing neutral posts alone.
+Recall: 132 out of 139 correct (0.9496402877697842)
+Precision: 0.375
+F1 Measure: 0.5376782077393076

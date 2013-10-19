@@ -7,6 +7,11 @@
 import json
 import Stemmer
 
+# constants for negative, positive, neutral.
+NEGATIVE = 0
+POSITIVE = 1
+NEUTRAL = 2
+
 class Provider:
 
   def __init__(self, lexiconName):
@@ -43,8 +48,3 @@ class Provider:
     # write json of dictionary to file.
     rawJson = json.dumps(self.dict)
     newFile.write(rawJson)
-
-# constants for negative, positive, neutral.
-NEGATIVE = 0
-POSITIVE = 1
-NEUTRAL = 2
