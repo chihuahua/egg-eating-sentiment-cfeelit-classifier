@@ -22,14 +22,15 @@ class Classifier:
         '__/__': True, # applause
         '<>': True, # clap
         ':)': True,
-	';)': True,
+	      ';)': True,
         '(:': True,
-	'(;': True,
+	      '(;': True,
         ':-)': True,
-	'(-:': True,
-	';-)': True,
-	'(-;': True,
+	      '(-:': True,
+	      ';-)': True,
+	      '(-;': True,
         ':D': True,
+        ':-D': True,
         ';D': True,
         ':-{}': True, # blowing a kiss.
         ':*)': True, # clowning.
@@ -116,7 +117,8 @@ class Classifier:
     exclamations = re.findall(self.exclamationRegex, post)
     if exclamations:
       # exclamation mark found. emphasize sentiments based on how many.
-      moodEmphasis = len(exclamations) * 5
+      # moodEmphasis = len(exclamations) * 5
+      moodEmphasis = 3
 
     for i, word in enumerate(words):
       if word in SpecialWords.negationWords:
